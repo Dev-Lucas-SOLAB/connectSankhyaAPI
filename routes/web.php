@@ -11,8 +11,10 @@ Route::post('/auth/user', [AuthorizationController::class, 'AuthorizationUser'])
 Route::post('/logout', [LogoutController::class, 'logout']);
 
 
-Route::post('/recoard/save', [RecoardController::class, 'saveRecoardFunction']);
-Route::get('/recoard/load', [RecoardController::class, 'loadRecoardFunction']);
+Route::post('/recoard/save',    [RecoardController::class, 'saveRecoardFunction']);
+Route::get('/recoard/load',     [RecoardController::class, 'loadRecoardFunction']);
+Route::post('/recoard/update',  [RecoardController::class, 'updateRecordFunction']);
+
 
 
 

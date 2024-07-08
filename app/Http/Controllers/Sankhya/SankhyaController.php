@@ -272,4 +272,68 @@ class SankhyaController extends Controller
             throw new Exception('Erro ao realizar a requisição: ' . $e->getMessage());
         }
     }
+
+
+    public function updateRecord($entityName, $fields, $records, $keys)
+    {
+
+        $formattedRecords = [];
+
+        foreach ($records as $record) {
+            $formattedRecords[] = [
+                $record["pk"]  => [
+                    "$" => $record["values"]
+                ]
+            ];
+        }
+
+
+        $formattedKeys = [];
+
+        foreach ($keys as $value) {
+            $formattedKeys[] = [
+                $value["pk"]  => [
+                    "$" => $value["values"]
+                ]
+            ];
+        }
+
+
+        $data = json_encode([
+            "serviceName" => "CRUDServiceProvider.saveRecord",
+            "requestBody" => [
+                "dataSet" => [
+                    "rootEntity" => $entityName,
+                    "includePresentationFields" => "S",
+                    "dataRow" => [
+                        "localFields" => $formattedRecords,
+                        "key" => $formattedKeys
+                    ],
+                    "entity" => [
+                        "fieldset" => [
+                            "list" => $fields
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+
+        try {
+
+            $url        = $this->getUrl($this->saveRecoard);
+            $response   = $this->httpExecuteJson("POST", $url, $data);
+            $result     = json_decode($response, true);
+
+            if (!isset($result['responseBody']['entities']['entity'])) {
+                throw new Exception('Erro ao no retorno do responseBody: ' . $result['statusMessage']);
+            }
+
+
+            return $result;
+
+        } catch (Exception $e) {
+            throw new Exception('Erro ao realizar a requisição: ' . $e->getMessage());
+        }
+    }
 }
